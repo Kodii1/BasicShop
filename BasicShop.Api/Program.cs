@@ -5,7 +5,6 @@ var app = builder.Build();
 
 
 app.MapItemEndpoints();
-
-app.MapGet("/", () => "Hello World!");
+app.MapCartEndpoints();
 
 app.Run();

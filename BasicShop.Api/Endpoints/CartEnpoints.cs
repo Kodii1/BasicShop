@@ -11,7 +11,7 @@ public static class CartEndpoints{
     new (1,
         "Apple",
         "Red fruit",
-        12.50,
+        12.50m,
         3,
         Category.Fruits
         ),
@@ -19,7 +19,7 @@ public static class CartEndpoints{
     new (2,
         "Red Car",
         "BMW with colour red",
-        120000.50,
+        120000.50m,
         1,
         Category.Cars
         ),
@@ -28,7 +28,7 @@ public static class CartEndpoints{
   new CartDto (1, listOfItems),
   new CartDto (2, new List<ItemDto>(listOfItems)
   {
-    new ItemDto(3 ,"Potato", "Frest from ground", 1.0, 10, Category.Wegetables)
+    new ItemDto(3 ,"Potato", "Frest from ground", 1.0m, 10, Category.Wegetables)
   })
 };
 
