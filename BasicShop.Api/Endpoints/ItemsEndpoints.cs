@@ -10,7 +10,7 @@ public static class ItemsEndpoints{
     new (1,
         "Apple",
         "Red fruit",
-        12.50,
+        12.50m,
         3,
         Category.Fruits
         ),
@@ -18,14 +18,14 @@ public static class ItemsEndpoints{
     new (2,
         "Red Car",
         "BMW with colour red",
-        120000.50,
+        120000.50m,
         1,
         Category.Cars
         ),
   ];
 
   public static RouteGroupBuilder MapItemEndpoints(this WebApplication app){
-    var groups = app.MapGroup("items");
+    var groups = app.MapGroup("items").WithParameterValidation();
 
     //GET items
     groups.MapGet("/", () => listOfItems);
