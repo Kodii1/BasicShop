@@ -31,11 +31,16 @@ List<CartDto> carts = new List<CartDto> {
 };
 
 //GET items
-app.MapGet("items/", () => listOfItems).WithName("GetItem");
+app.MapGet("items/", () => listOfItems);
 
 
 //GET item/{id}
-app.MapGet("items/{id}", (int id) => listOfItems.Find(item => item.Id == id));
+app.MapGet("items/{id}", (int id) =>
+    {
+      ItemDto? item = listOfItems.Find(item => item.Id == id);
+
+      return item is null ? Results.NotFound() : Results.Ok(item);
+    }).WithName("GetItem");
 
 //POST items
 app.MapPost("items", (CreateItemDto newItem) =>
@@ -68,7 +73,13 @@ app.MapPut("items/{id}", (int id, UpdateItemDto updateItem) =>
       return Results.NoContent();
       });
 
-//DELETE games/{id}
+//DELETE items/{id}
+app.MapDelete("items/{id}", (int id) =>
+    {
+    listOfItems.RemoveAll(item => item.Id == id);
+
+    return Results.NoContent();
+    });
 
 //GET carts
 app.MapGet("carts/", () => carts);

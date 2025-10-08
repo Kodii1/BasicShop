@@ -26,3 +26,4 @@
 /Users/adrian/Documents/Git/CSharp/projects/BasicShop/BasicShop.Api/obj/Debug/net9.0/BasicShop.Api.pdb
 /Users/adrian/Documents/Git/CSharp/projects/BasicShop/BasicShop.Api/obj/Debug/net9.0/BasicShop.Api.genruntimeconfig.cache
 /Users/adrian/Documents/Git/CSharp/projects/BasicShop/BasicShop.Api/obj/Debug/net9.0/ref/BasicShop.Api.dll
+/Users/adrian/Documents/Git/CSharp/projects/BasicShop/BasicShop.Api/obj/Debug/net9.0/BasicShop.Api.sourcelink.json
