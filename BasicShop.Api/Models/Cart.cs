@@ -2,6 +2,7 @@ namespace BasicShop.Api.Models;
 
 using BasicShop.Api.DTOs;
 
-public record class CartDto(
-    int Id,
-    List<ItemDto> Items);
+public class CartDto{
+    public int Id;
+    public List<ItemDto>? Items;
+};

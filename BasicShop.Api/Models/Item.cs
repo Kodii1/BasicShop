@@ -2,10 +2,10 @@ namespace BasicShop.Api.Models;
 
 using BasicShop.Api.Enum;
 
-public record class Item(
-    string Name,
-    string Description,
-    decimal Price,
-    int Quantity,
-    Category Category
-    );
+public class Item{
+    public required string Name;
+    public required string Description;
+    public required decimal Price;
+    public required int Quantity;
+    public required Category Category;
+    };
