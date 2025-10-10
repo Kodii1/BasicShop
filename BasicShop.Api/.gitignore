@@ -1,4 +1,4 @@
 test.html
-bin/*
-obj/*
+bin/
+obj/
 .env

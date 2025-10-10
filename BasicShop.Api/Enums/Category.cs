@@ -1,7 +1,15 @@
 namespace BasicShop.Api.Enum;
 
-public enum Category{
-  Cars,
-  Fruits,
-  Wegetables,
-  Others};
+using System.ComponentModel;
+
+public enum Category
+{
+    [Description("Cars")]
+    Cars,
+    [Description("Fruits")]
+    Fruits,
+    [Description("Wegetables")]
+    Wegetables,
+    [Description("Others")]
+    Others
+};

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using BasicShop.Api.Enum;
 
 public record class UpdateItemDto(
-    [Required] int Id,
     [Required] string Name,
     [Required] string Description,
     [Required] decimal Price,

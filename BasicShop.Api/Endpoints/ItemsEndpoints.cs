@@ -1,88 +1,81 @@
+using BasicShop.Api.Data;
+using BasicShop.Api.DTOs;
+using BasicShop.Api.Mappers.Item;
+using BasicShop.Api.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace BasicShop.Api.Endpoints;
 
-using BasicShop.Api.DTOs;
-using BasicShop.Api.Enum;
+public static class ItemsEndpoints
+{
 
-public static class ItemsEndpoints{
+    const string GetItemEndpointName = "GetItem";
 
-  const string GetItemEndpointName = "GetItem";
-  private static readonly List<ItemDto> listOfItems = [
-    new (1,
-        "Apple",
-        "Red fruit",
-        12.50m,
-        3,
-        Category.Fruits
-        ),
+    public static RouteGroupBuilder MapItemEndpoints(this WebApplication app)
+    {
+        var groups = app.MapGroup("items").WithParameterValidation();
 
-    new (2,
-        "Red Car",
-        "BMW with colour red",
-        120000.50m,
-        1,
-        Category.Cars
-        ),
-  ];
-
-  public static RouteGroupBuilder MapItemEndpoints(this WebApplication app){
-    var groups = app.MapGroup("items").WithParameterValidation();
-
-    //GET items
-    groups.MapGet("/", () => listOfItems);
+        //GET items
+        groups.MapGet("/", (BasicStoreContext dbContext) =>
+            dbContext.Items
+                            .Select(item => item.ToDto())
+                            .AsNoTracking());
 
 
-    //GET item/{id}
-    groups.MapGet("/{id}", (int id) =>
-        {
-          ItemDto? item = listOfItems.Find(item => item.Id == id);
+        //GET item/{id}
+        groups.MapGet("/{id}", (int id, BasicStoreContext dbContext) =>
+            {
+                Item? item = dbContext.Items.Find(id);
 
-          return item is null ? Results.NotFound() : Results.Ok(item);
-        }).WithName(GetItemEndpointName);
+                return item is null ? Results.NotFound() : Results.Ok(item.ToDto());
+            }).WithName(GetItemEndpointName);
 
-    //POST items
-    groups.MapPost("/", (CreateItemDto newItem) =>
-        {
-          ItemDto item = new(
-              listOfItems.Count() + 1,
-              newItem.Name,
-              newItem.Description,
-              newItem.Price,
-              newItem.Quantity,
-              newItem.Category
-              );
-          listOfItems.Add(item);
-          return Results.CreatedAtRoute("GetItem", new {id = item.Id}, item);
-        });
+        //POST items
+        groups.MapPost("/", (CreateItemDto newItem, BasicStoreContext dbContext) =>
+            {
+                Item item = new()
+                {
+                    Name = newItem.Name,
+                    Description = newItem.Description,
+                    Price = newItem.Price,
+                    Quantity = newItem.Quantity,
+                    Category = newItem.Category
+                };
 
-    //PUT items
-    groups.MapPut("/{id}", (int id, UpdateItemDto updateItem) =>
-        {
-          var index = listOfItems.FindIndex(item => item.Id == id);
+                dbContext.Items.Add(item);
+                dbContext.SaveChanges();
 
-          if(index == -1)
-          {
-            return Results.NotFound();
-          }
+                return Results.CreatedAtRoute("GetItem", new { id = item.Id }, item.ToDto());
+            });
 
-          listOfItems[index] = new ItemDto(
-              id,
-              updateItem.Name,
-              updateItem.Description,
-              updateItem.Price,
-              updateItem.Quantity,
-              updateItem.Category
-              );
-          return Results.NoContent();
-          });
+        //PUT items
+        groups.MapPut("/{id}", (int id, UpdateItemDto updateItem, BasicStoreContext dbContext) =>
+            {
+                var existingItem = dbContext.Items.Find(id);
 
-    //DELETE items/{id}
-    groups.MapDelete("/{id}", (int id) =>
-        {
-        listOfItems.RemoveAll(item => item.Id == id);
+                if (existingItem is null)
+                {
+                    return Results.NotFound();
+                }
+                dbContext.Entry(existingItem)
+                                .CurrentValues
+                                .SetValues(updateItem.ToModel(id));
 
-        return Results.NoContent();
-        });
+                dbContext.SaveChanges();
+                return Results.NoContent();
+            });
 
-    return groups;
-  }
+        //DELETE items/{id}
+        groups.MapDelete("/{id}", (int id, BasicStoreContext dbContext) =>
+            {
+                dbContext.Items
+                                .Where(item => item.Id == id)
+                                .ExecuteDelete();
+
+
+                return Results.NoContent();
+            });
+
+        return groups;
+    }
 }
